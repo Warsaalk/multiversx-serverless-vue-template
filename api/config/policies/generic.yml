@@ -1,0 +1,163 @@
+Version: '2012-10-17'
+Statement:
+  - Effect: Allow
+    Action:
+      - apigateway:GET
+      - apigateway:POST
+      - apigateway:PUT
+      - apigateway:DELETE
+      - apigateway:PATCH
+    Resource:
+      - arn:aws:apigateway:eu-west-1::/apis
+  - Effect: Allow
+    Action:
+      - apigateway:GET
+      - apigateway:POST
+      - apigateway:PUT
+      - apigateway:DELETE
+      - apigateway:PATCH
+      - apigateway:TagResource
+    Resource:
+      - arn:aws:apigateway:eu-west-1::/apis/*
+  - Effect: Allow
+    Action:
+      - apigateway:POST
+      - apigateway:PUT
+      - apigateway:DELETE
+    Resource:
+      - arn:aws:apigateway:eu-west-1::/tags/*
+  - Effect: Allow
+    Action:
+      - apigateway:POST
+    Resource: arn:aws:apigateway:eu-west-1::/domainnames
+  - Effect: Allow
+    Action:
+      - apigateway:GET
+      - apigateway:DELETE
+    Resource: arn:aws:apigateway:eu-west-1::/domainnames/*
+  - Effect: Allow
+    Action:
+      - apigateway:POST
+    Resource: arn:aws:apigateway:eu-west-1::/domainnames/*/apimappings
+  - Effect: Allow
+    Action:
+      - apigateway:GET
+      - apigateway:PATCH
+    Resource: arn:aws:apigateway:eu-west-1::/domainnames/*/apimappings/*
+  - Effect: Allow
+    Action:
+      - lambda:GetFunction
+      - lambda:CreateFunction
+      - lambda:DeleteFunction
+      - lambda:UpdateFunctionConfiguration
+      - lambda:UpdateFunctionCode
+      - lambda:ListAliases
+      - lambda:ListVersionsByFunction
+      - lambda:PublishVersion
+      - lambda:CreateAlias
+      - lambda:DeleteAlias
+      - lambda:UpdateAlias
+      - lambda:GetFunctionConfiguration
+      - lambda:AddPermission
+      - lambda:RemovePermission
+      - lambda:InvokeAsync
+      - lambda:InvokeFunction
+      - lambda:PutFunctionEventInvokeConfig
+      - lambda:DeleteFunctionEventInvokeConfig
+      - lambda:UpdateFunctionEventInvokeConfig
+      - lambda:ListTags
+      - lambda:TagResource
+      - lambda:UntagResource
+      - lambda:DeleteFunctionConcurrency
+      - lambda:PutFunctionConcurrency
+    Resource:
+      - arn:aws:lambda:*:${self:provider.environment.IAM_ID}:function:*
+  - Effect: Allow
+    Action:
+      - lambda:CreateEventSourceMapping
+      - lambda:GetEventSourceMapping
+      - lambda:UpdateEventSourceMapping
+      - lambda:DeleteEventSourceMapping
+      - lambda:ListEventSourceMappings
+    Resource:
+      - "*"
+  - Effect: Allow
+    Action:
+      - events:Put*
+      - events:Remove*
+      - events:Delete*
+      - events:Describe*
+    Resource: arn:aws:events::${self:provider.environment.IAM_ID}:rule/*
+  - Effect: Allow
+    Action:
+      - cloudfront:UpdateDistribution
+      - cloudfront:CreateCloudFrontOriginAccessIdentity
+      - cloudfront:CreateDistribution
+      - cloudfront:CreateDistributionWithTags
+      - cloudfront:CreateCachePolicy
+      - cloudfront:TagResource
+    Resource:
+      - "*"
+  - Effect: Allow
+    Action:
+      - route53:ListHostedZones
+    Resource:
+      - "*"
+  - Effect: Allow
+    Action:
+      - route53:ListResourceRecordSets
+      - route53:ChangeResourceRecordSets
+    Resource:
+      - arn:aws:route53:::hostedzone/${self:provider.environment.APP_DOMAIN_ZONE}
+      - arn:aws:route53:::hostedzone/${self:provider.environment.APP_DOMAIN_ZONE}/*
+  - Effect: Allow
+    Action:
+      - acm:ListCertificates
+    Resource:
+      - "*"
+  - Effect: Allow
+    Action:
+      - acm:DescribeCertificate
+      - acm:GetCertificate
+      - acm:ListTagsForCertificate
+      - acm:DeleteCertificate
+      - acm:RequestCertificate
+      - acm:AddTagsToCertificate
+      - acm:RemoveTagsFromCertificate
+      - acm:RenewCertificate
+      - acm:UpdateCertificateOptions
+    Resource: arn:aws:acm:eu-west-1:${self:provider.environment.IAM_ID}:certificate/*
+  - Effect: Allow
+    Action:
+      - route53:ChangeResourceRecordSets
+      - route53:GetHostedZone
+      - route53:ListResourceRecordSets
+    Resource: arn:aws:route53:::hostedzone/*
+  - Effect: Allow
+    Action:
+      - lambda:ListLayerVersions
+      - lambda:PublishLayerVersion
+      - lambda:AddLayerVersionPermission
+      - lambda:DeleteLayerVersion
+      - lambda:GetLayerVersion
+      - lambda:GetLayerVersionPolicy
+      - lambda:RemoveLayerVersionPermission
+    Resource: arn:aws:lambda:eu-west-1:${self:provider.environment.IAM_ID}:layer:*
+  - Effect: Allow
+    Action:
+      - logs:PutRetentionPolicy
+      - logs:DeleteRetentionPolicy
+      - logs:TagResource
+    Resource: arn:aws:logs:eu-west-1:${self:provider.environment.IAM_ID}:log-group:/aws/lambda/drift-dock-*
+  - Effect: Allow
+    Action:
+      - iam:PassRole
+      - iam:CreateRole
+      - iam:DeleteRole
+      - iam:DetachRolePolicy
+      - iam:PutRolePolicy
+      - iam:AttachRolePolicy
+      - iam:DeleteRolePolicy
+    Resource:
+      - arn:aws:iam::${self:provider.environment.IAM_ID}:role/drift-dock/${self:provider.stage}/states/*
+      - arn:aws:iam::${self:provider.environment.IAM_ID}:role/drift-dock/${self:provider.stage}/schedule/*

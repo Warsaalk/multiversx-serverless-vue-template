@@ -1,0 +1,62 @@
+service: drift-dock-resources
+
+useDotenv: true
+frameworkVersion: ^3.27.0
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  stage: ${opt:stage, 'develop'}
+  region: ${opt:region, 'eu-west-1'}
+  environment: ${file(./config/dynamic/environment.cjs):build}
+  deploymentMethod: direct
+  logRetentionInDays: ${self:custom.logRetentionInDays.app, 1096}
+  stackTags:
+    APP: DriftDock
+    ENV: ${self:provider.stage}
+  tags:
+    APP: DriftDock
+    ENV: ${self:provider.stage}
+  httpApi:
+    name: drift-dock-${self:provider.stage}
+    cors: false
+    useProviderTags: true
+    disableDefaultEndpoint: true
+
+custom:
+  logRetentionInDays: ${file(./config/dynamic/log-retention.cjs):days}
+  customDomain:
+    domainName: ${self:provider.environment.APP_DOMAIN}
+    certificateName: ${self:provider.environment.APP_DOMAIN}
+    basePath: ''
+    #stage: ${self:provider.stage}
+    createRoute53Record: true
+    createRoute53IPv6Record: true
+    endpointType: regional
+    apiType: http
+  customCertificate:
+    certificateName: ${self:provider.environment.APP_DOMAIN}
+    subjectAlternativeNames:
+      - 'ws.${self:provider.environment.APP_DOMAIN}'
+      - 'assets.${self:provider.environment.APP_DOMAIN}'
+    hostedZoneIds: ${self:provider.environment.APP_DOMAIN_ZONE}
+    region: ${self:provider.region}
+    enabled: true
+    rewriteRecords: false
+
+plugins:
+  - serverless-certificate-creator
+  - serverless-domain-manager
+
+functions:
+  hello:
+    handler: src/functions/hello.handler
+    events:
+      - httpApi:
+          path: /hello
+          method: GET
+
+resources:
+  - ${file(config/resources/conditions.yml)}
+  - ${file(config/resources/generic.yml)}
+  - ${file(config/resources/outputs.yml)}

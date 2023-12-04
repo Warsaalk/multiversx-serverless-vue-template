@@ -1,0 +1,6 @@
+Outputs:
+  apiGatewayHttpApiId:
+    Value:
+      Ref: HttpApi
+    Export:
+      Name: drift-dock-${self:provider.stage}-httpApi

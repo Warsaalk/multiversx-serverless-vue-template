@@ -1,0 +1,7 @@
+.idea
+.serverless
+app/dist/
+app/node_modules/
+api/serverless.env.yml
+api/node_modules/
+lib/node_modules

@@ -1,0 +1,53 @@
+service: drift-dock-policies
+
+useDotenv: true
+frameworkVersion: ^3.27.0
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  stage: ${opt:stage, 'develop'}
+  region: ${opt:region, 'eu-west-1'}
+  environment: ${file(./config/dynamic/environment.cjs):build}
+  deploymentMethod: direct
+  stackTags:
+    APP: DriftDock
+    ENV: ${self:provider.stage}
+  tags:
+    APP: DriftDock
+    ENV: ${self:provider.stage}
+
+resources:
+  Resources:
+    deploymentGroup:
+      Type: AWS::IAM::Group
+      Properties:
+        GroupName: drift-dock-${self:provider.stage}-deployment
+
+    deploymentPolicyGeneric:
+      Type: AWS::IAM::ManagedPolicy
+      DependsOn: deploymentGroup
+      Properties:
+        ManagedPolicyName: drift-dock-${self:provider.stage}-deployment-generic
+        Groups:
+          - drift-dock-${self:provider.stage}-deployment
+        PolicyDocument:
+          ${file(config/policies/generic.yml)}
+
+    deploymentPolicyServices:
+      Type: AWS::IAM::ManagedPolicy
+      DependsOn: deploymentGroup
+      Properties:
+        ManagedPolicyName: drift-dock-${self:provider.stage}-deployment-services
+        Groups:
+          - drift-dock-${self:provider.stage}-deployment
+        PolicyDocument:
+          ${file(config/policies/services.yml)}
+
+    deploymentGroupAddition:
+      Type: AWS::IAM::UserToGroupAddition
+      DependsOn: deploymentGroup
+      Properties:
+        GroupName: drift-dock-${self:provider.stage}-deployment
+        Users:
+          - ${self:provider.environment.IAM_USER}

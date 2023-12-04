@@ -1,0 +1,15 @@
+{
+  "name": "@klaas.cc/drift-dock-lib",
+  "description": "",
+  "version": "0.0.1",
+  "author": {
+    "name": "Klaas Van Parys",
+    "email": "contact@klaas.cc",
+    "url": "https://klaas.cc"
+  },
+  "private": true,
+  "devDependencies": {
+    "js-yaml": "^4.1.0",
+    "minimist": "^1.2.8"
+  }
+}

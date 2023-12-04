@@ -1,0 +1,16 @@
+index:
+  handler: src/functions/app/index.handler
+  role: indexRole
+  events:
+    - httpApi:
+        path: /
+        method: GET
+    - httpApi: '*' # Catch All
+
+collectionRead:
+  handler: src/functions/app/collection/read.handler
+  role: collectionReadRole
+  events:
+    - httpApi:
+        path: /api/collection/{collectionId}
+        method: GET

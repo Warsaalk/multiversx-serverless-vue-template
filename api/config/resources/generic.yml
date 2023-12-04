@@ -1,0 +1,138 @@
+Resources:
+  AssetsBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: ${self:provider.environment.ASSETS_BUCKET}
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: TRUE
+        BlockPublicPolicy: TRUE
+        IgnorePublicAcls: TRUE
+        RestrictPublicBuckets: TRUE
+      CorsConfiguration:
+        CorsRules:
+          - Id: GetObjectsFromEverywhere
+            AllowedHeaders:
+              - '*'
+            AllowedMethods:
+              - GET
+            AllowedOrigins:
+              - '*'
+            ExposedHeaders: []
+          - Id: PutObjectsFromApp
+            AllowedHeaders:
+              - '*'
+            AllowedMethods:
+              - GET
+              - PUT
+            AllowedOrigins:
+              - https://${self:provider.environment.APP_DOMAIN}
+            ExposedHeaders: []
+
+  AssetsCdnOAI:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Condition: CreateAssetsCdn
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        CallerReference: drift-docker-${self:provider.stage}
+        Comment: access-identity-${self:provider.environment.ASSETS_BUCKET}.s3.amazonaws.com
+
+  AssetsCdnBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Condition: CreateAssetsCdn
+    Properties:
+      Bucket: !Ref AssetsBucket
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: drift-dock-assets-CloudfrontBucketPolicy-${self:provider.stage}
+            Effect: Allow
+            Action:
+              - 's3:GetObject'
+            Resource: arn:aws:s3:::${self:provider.environment.ASSETS_BUCKET}/*
+            Principal:
+              Fn::GetAtt:
+                - AssetsCdnOAI
+                - S3CanonicalUserId
+
+  AssetsCdnCachePolicy:
+    Type: AWS::CloudFront::CachePolicy
+    Condition: CreateAssetsCdn
+    Properties:
+      CachePolicyConfig:
+        Name: drift-docker-assets-CloudfrontCachePolicy-${self:provider.stage}
+        DefaultTTL: 300
+        MinTTL: 0
+        ParametersInCacheKeyAndForwardedToOrigin:
+          EnableAcceptEncodingGzip: true
+          EnableAcceptEncodingBrotli: true
+          CookiesConfig:
+            CookieBehavior: none
+          HeadersConfig:
+            HeaderBehavior: whitelist
+            Headers:
+              Quantity: 3
+              Items:
+                - Origin
+                - Access-Control-Request-Headers
+                - Access-Control-Request-Method
+          QueryStringsConfig:
+            QueryStringBehavior: whitelist
+            QueryStrings:
+              Quantity: 1
+              Items:
+                - v
+
+  AssetsCdn:
+    Type: AWS::CloudFront::Distribution
+    Condition: CreateAssetsCdn
+    Properties:
+      DistributionConfig:
+        Enabled: true
+        HttpVersion: http2
+        Aliases:
+          Quantity: 1
+          Items:
+            - ${self:provider.environment.ASSETS_DOMAIN}
+        CallerReference: drift-docker-${self:provider.stage}
+        Comment: ${self:provider.environment.ASSETS_BUCKET}-cdn
+        DefaultCacheBehavior:
+          TargetOriginId: ${self:provider.environment.ASSETS_BUCKET}
+          ViewerProtocolPolicy: redirect-to-https
+          AllowedMethods:
+            Items:
+              - GET
+              - HEAD
+              - OPTIONS
+            Quantity: 3,
+            CachedMethods:
+              Items:
+                - GET
+                - HEAD
+                - OPTIONS
+              Quantity: 3
+          CachePolicyId: !Ref AssetsCdnCachePolicy
+          Compress: true
+          TrustedSigners:
+            Enabled: false
+            Quantity: 0
+        Origins:
+          Items:
+            - DomainName: ${self:provider.environment.ASSETS_BUCKET}.s3.amazonaws.com
+              Id: ${self:provider.environment.ASSETS_BUCKET}
+              S3OriginConfig:
+                OriginAccessIdentity:
+                  Fn::Join:
+                    - ''
+                    - - origin-access-identity/cloudfront/
+                      - !Ref AssetsCdnOAI
+          Quantity: 1
+        ViewerCertificate:
+          CloudFrontDefaultCertificate: false
+          ACMCertificateArn: arn:aws:acm:us-east-1:995320107707:certificate/a3170cd8-c8ab-421e-8000-6a43244c2029
+          MinimumProtocolVersion: TLSv1.2_2018
+          SSLSupportMethod: sni-only
+      Tags:
+        - Key: APP
+          Value: ${self.provider.tags.APP}
+        - Key: ENV
+          Value: ${self.provider.tags.ENV}

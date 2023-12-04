@@ -1,0 +1,5 @@
+Conditions:
+  CreateAssetsCdn: !Not
+    - !Equals
+      - ${self:provider.environment.ASSETS_LOCAL, false}
+      - true

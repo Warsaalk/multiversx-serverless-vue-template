@@ -1,0 +1,47 @@
+service: drift-dock-app
+
+useDotenv: true
+frameworkVersion: ^3.27.0
+
+custom:
+  version-functions-production: true
+  #apiGatewayCaching: ${file(./config/dynamic/api-gateway-caching.cjs):app}
+  logRetentionInDays: ${file(./config/dynamic/log-retention.cjs):days}
+  prune:
+    automatic: true
+    includeLayers: true
+    number: 20
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  memorySize: ${opt:memory, '128'}
+  stage: ${opt:stage, 'develop'}
+  region: ${opt:region, 'eu-west-1'}
+  environment: ${file(./config/dynamic/environment.cjs):build}
+  versionFunctions: ${self:custom.version-functions-${self:provider.stage} , false}
+  deploymentMethod: direct
+  logRetentionInDays: ${self:custom.logRetentionInDays.app, 1096}
+  stackTags:
+    APP: DriftDock
+    ENV: ${self:provider.stage}
+  tags:
+    APP: DriftDock
+    ENV: ${self:provider.stage}
+  httpApi:
+    id:
+      'Fn::ImportValue': drift-dock-${self:provider.stage}-httpApi
+
+plugins:
+  - serverless-api-gateway-caching
+  - serverless-prune-plugin
+
+package:
+  patterns:
+    ${file(./config/package-config.yml)}
+
+functions:
+  - ${file(./config/app/functions.yml)}
+
+resources:
+  - ${file(./config/app/roles.yml)}

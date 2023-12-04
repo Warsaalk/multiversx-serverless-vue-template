@@ -1,0 +1,30 @@
+{
+  "name": "@klaas.cc/drift-dock-api",
+  "description": "",
+  "version": "0.0.1",
+  "type": "module",
+  "author": {
+    "name": "Klaas Van Parys",
+    "email": "contact@klaas.cc",
+    "url": "https://klaas.cc"
+  },
+  "private": true,
+  "dependencies": {
+    "@aws-sdk/client-scheduler": "^3.465.0",
+    "data-uri-to-buffer": "^6.0.1",
+    "mongodb": "^6.3.0",
+    "uuid": "^9.0.1",
+    "xss": "^1.0.14"
+  },
+  "devDependencies": {
+    "@aws-sdk/client-lambda": "^3.465.0",
+    "@aws-sdk/client-sfn": "^3.465.0",
+    "@aws-sdk/types": "^3.465.0",
+    "serverless": "^3.38.0",
+    "serverless-api-gateway-caching": "^1.10.3",
+    "serverless-domain-manager": "^7.3.1",
+    "serverless-certificate-creator": "^1.6.0",
+    "serverless-prune-plugin": "^2.0.2",
+    "yaml": "^2.3.4"
+  }
+}

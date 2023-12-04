@@ -1,0 +1,61 @@
+Version: '2012-10-17'
+Statement:
+  - Effect: Allow
+    Action:
+      - states:CreateStateMachine
+      - states:UpdateStateMachine
+      - states:DeleteStateMachine
+      - states:TagResource
+      - states:UntagResource
+      - states:DescribeStateMachine
+    Resource: arn:aws:states:eu-west-1:${self:provider.environment.IAM_ID}:stateMachine:*
+  - Effect: Allow
+    Action:
+      - sqs:CreateQueue
+      - sqs:GetQueueAttributes
+      - sqs:SetQueueAttributes
+      - sqs:DeleteQueue
+      - sqs:TagQueue
+      - sqs:UntagQueue
+      - sqs:AddPermission
+      - sqs:RemovePermission
+      - sqs:ListDeadLetterSourceQueues
+      - sqs:ListQueues
+    Resource: arn:aws:sqs:eu-west-1:${self:provider.environment.IAM_ID}:*
+  - Effect: Allow
+    Action:
+      - scheduler:GetScheduleGroup
+      - scheduler:CreateScheduleGroup
+      - scheduler:DeleteScheduleGroup
+      - scheduler:ListScheduleGroups
+      - scheduler:DeleteSchedule
+      - scheduler:ListTagsForResource
+      - scheduler:TagResource
+      - scheduler:UntagResource
+    Resource: arn:aws:scheduler:eu-west-1:${self:provider.environment.IAM_ID}:*
+  - Effect: Allow
+    Action:
+      - sns:Publish
+      - sns:CreateTopic
+      - sns:DeleteTopic
+      - sns:TagResource
+      - sns:UntagResource
+      - sns:GetTopicAttributes
+      - sns:SetTopicAttributes
+      - sns:ListSubscriptions
+      - sns:SetSubscriptionAttributes
+      - sns:GetSubscriptionAttributes
+      - sns:ConfirmSubscription
+      - sns:Subscribe
+      - sns:Unsubscribe
+    Resource: arn:aws:sns:eu-west-1:${self:provider.environment.IAM_ID}:*
+  - Effect: Allow
+    Action:
+      - dynamodb:CreateTable
+      - dynamodb:DescribeTable
+      - dynamodb:UpdateTable
+      - dynamodb:GetItem
+      - dynamodb:PutItem
+      - dynamodb:ListTables
+      - dynamodb:BatchWriteItem
+    Resource: "*"
