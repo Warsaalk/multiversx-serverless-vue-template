@@ -1,0 +1,70 @@
+
+:root {
+    --background: #fff;
+    --background-secondary: #F5F5F5 /*rgba(0, 0, 0, 0.04)*/;
+    --background-tertiary: #F0F0F0 /*rgba(228, 228, 228, 0.55)*/;
+
+    --text-color: #515151;
+    --text-color-secondary: rgba(81, 81, 81, 0.75);
+
+    --border-radius: 3px;
+    --border-color-default: rgba(200, 200, 200, 0.5);
+
+    --status-green: #88d46255;
+    --status-green-text: #72b153;
+    --status-orange: #f6be5d55;
+    --status-orange-text: #c39649;
+    --status-red: #f28a4455;
+    --status-red-text: #c47038;
+}
+
+html, body, #app { height: 100%; }
+
+html { background-color: var(--background-tertiary); color: var(--text-color); }
+
+html, input, textarea, select, button { font-size: 16px; font-family: 'Roboto', sans-serif; line-height: 1.125; }
+
+body { margin: -1px auto 0; padding: 1px 0 0; }
+
+#app {  }
+#app-view .view { padding: 25px; }
+
+form { }
+form section + section { margin-top: 25px; }
+form .input label { display: block; margin-bottom: 15px; }
+form input[type="text"],
+form input[type="email"],
+form input[type="number"],
+form select { padding: 10px; border-radius: var(--border-radius); border: 1px solid var(--border-color-default); box-sizing: border-box; }
+form input[type="text"] { width: 100%; }
+form .info,
+form .error { padding: 15px; margin-bottom: 15px; border-radius: var(--border-radius); }
+form .error { background: var(--status-red); color: var(--status-red-text); }
+form .info { background: var(--status-green); color: var(--status-green-text); }
+
+div.split { display: flex; flex-flow: row wrap; }
+div.split > div { width: 48%; box-sizing: border-box; }
+div.split > div + div { margin-left: 4%; }
+div.split.triple > div { width: 29%; }
+div.split.triple > div + div { margin-left: 4%; }
+
+.btn { display: inline-block; cursor: pointer; box-sizing: border-box; background: transparent; padding: 10px 25px; border: 1px solid var(--main-color); color: var(--text-color); border-radius: var(--border-radius); font-weight: 500; }
+.btn.active:not(:disabled) { background: var(--main-color); color: var(--main-text-color); }
+
+.spinner { animation: spinning 1s linear infinite; }
+
+.loader { position: fixed; top: 0; left: 0; height: 4px; width: 100%; background: transparent; overflow: hidden; }
+.loader::before { content: ""; position: absolute; top: 0; left: -20%; width: 20%; height: 100%; background: var(--tertiary-color); animation: loading 2s linear infinite; }
+
+@keyframes loading {
+    0% { left: -20%; width: 20%; }
+    75% { left: 50%; }
+    90% { left: 125%; }
+    100% { left: 100%; width: 100%; }
+}
+
+@keyframes spinning {
+    0% { transform: rotateZ(0deg); }
+    50% { transform: rotateZ(180deg); }
+    100% { transform: rotateZ(359deg); }
+}
