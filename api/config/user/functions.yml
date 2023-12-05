@@ -1,5 +1,5 @@
 index:
-  handler: src/functions/app/index.handler
+  handler: src/functions/user/index.handler
   role: indexRole
   events:
     - httpApi:
@@ -8,7 +8,7 @@ index:
     - httpApi: '*' # Catch All
 
 collectionRead:
-  handler: src/functions/app/collection/read.handler
+  handler: src/functions/user/collection/read.handler
   role: collectionReadRole
   events:
     - httpApi:

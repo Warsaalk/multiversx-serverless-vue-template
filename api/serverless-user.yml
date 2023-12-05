@@ -41,7 +41,7 @@ package:
     ${file(./config/package-config.yml)}
 
 functions:
-  - ${file(./config/app/functions.yml)}
+  - ${file(./config/user/functions.yml)}
 
 resources:
-  - ${file(./config/app/roles.yml)}
+  - ${file(./config/user/roles.yml)}
