@@ -4,7 +4,7 @@ import { createRouter, createWebHistory } from "vue-router";
 
 import { routes } from "./js/routes.js";
 
-import App from "./js/app.js";
+import App from "./js/app.vue";
 
 (function (app, c) {
     let initialized = false;
