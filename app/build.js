@@ -17,6 +17,8 @@ await new Promise(resolve => {
 	], {up: 2, all: true, exclude: ['./**/*.vue']}, resolve);
 });
 
+console.log("Build - compiling source vue files");
+
 await compileSFCs("./src/user/", "./dist/user/", {globalCssFile: "./dist/user/css/components.css"});
 
 console.log("Build - copying javascript libraries");
