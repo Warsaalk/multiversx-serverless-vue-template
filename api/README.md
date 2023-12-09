@@ -2,6 +2,10 @@
 
 ## Environment file
 
+You can start from the environment example file `serverless.env.yml-example`.
+Here are the properties and their possible values.
+Rename the file to `serverless.env.yml`, Serverless will automatically detect it.
+
 |  property  |       value       |                                                                  description                                                                   |
 |:----------:|:-----------------:|:----------------------------------------------------------------------------------------------------------------------------------------------:|
 | DB_STRING  | mongodb+srv://... |                            The application template works with MongoDB, but you could implement any other database.                            |
